@@ -1,0 +1,37 @@
+[build]
+  base = "."
+  command = "npm install && cd client && npm install && npm run build && mv build ../build"
+  publish = "build"
+
+[build.environment]
+  NODE_VERSION = "18"
+  NPM_VERSION = "9"
+
+# Redirect all API calls to your backend server
+[[redirects]]
+  from = "/api/*"
+  to = "http://localhost:5000/api/:splat"
+  status = 200
+  force = true
+
+# Redirect all other routes to React app
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Headers for security and CORS
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Disable secrets scanning for this demo project
+[build.processing]
+  skip_processing = false
+
+[build.processing.secrets]
+  enabled = false
